@@ -1,1 +1,0 @@
-# wisdom-sanctuary-app-frontend
