@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisdom Seekers - Historical Mentor Wellness</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parchment: '#f7f3e9',
+                        sepia: '#8b7355',
+                        gold: '#d4af37',
+                        sage: '#9caf88',
+                        crimson: '#8b2635'
+                    },
+                    fontFamily: {
+                        serif: ['Crimson Text', 'serif'],
+                        display: ['Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .paper-texture {
+            background: linear-gradient(135deg, #f7f3e9 0%, #f0ebe1 100%);
+            position: relative;
+        }
+        .paper-texture::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.03'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .mentor-card {
+            background: linear-gradient(145deg, rgba(247, 243, 233, 0.9), rgba(240, 235, 225, 0.9));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 85, 0.2);
+        }
+        .chat-bubble {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 243, 233, 0.8));
+            border: 1px solid rgba(139, 115, 85, 0.15);
+        }
+        .scroll-area {
+            scrollbar-width: thin;
+            scrollbar-color: #d4af37 transparent;
+        }
+        .scroll-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 2px;
+        }
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Mock Data
+        const mentors = [
+            {
+                id: 'musashi',
+                name: 'Miyamoto Musashi',
+                title: 'The Legendary Swordsman',
+                culture: 'Japanese',
+                philosophy: 'The Way of Strategy',
+                specialties: ['Focus', 'Discipline', 'Self-Mastery'],
+                quote: "Today is victory over yourself of yesterday; tomorrow is your victory over lesser men.",
+                color: 'crimson',
+                description: 'Master of discipline and strategic thinking, Musashi teaches the path of focused determination.',
+                avatar: '⚔️'
+            },
+            {
+                id: 'rumi',
+                name: 'Jalal ad-Din Rumi',
+                title: 'The Mystic Poet',
+                culture: 'Persian',
+                philosophy: 'Divine Love & Inner Journey',
+                specialties: ['Self-Acceptance', 'Emotional Healing', 'Spiritual Growth'],
+                quote: "The wound is the place where the Light enters you.",
+                color: 'sage',
+                description: 'Poet of the heart, Rumi guides through love, acceptance, and inner transformation.',
+                avatar: '🌹'
+            },
+            {
+                id: 'chanakya',
+                name: 'Chanakya',
+                title: 'The Ancient Strategist',
+                culture: 'Indian',
+                philosophy: 'Practical Wisdom',
+                specialties: ['Decision Making', 'Confidence', 'Life Strategy'],
+                quote: "A person should not be too honest. Straight trees are cut first.",
+                color: 'gold',
+                description: 'Master strategist who teaches practical wisdom for navigating life\'s challenges.',
+                avatar: '🏛️'
+            }
+        ];
+
+        const assessmentQuestions = [
+            {
+                id: 1,
+                question: "What challenges do you face most in your daily life?",
+                type: "multiple",
+                options: [
+                    { text: "Staying focused and motivated", value: "focus" },
+                    { text: "Managing anxiety and overthinking", value: "anxiety" },
+                    { text: "Making difficult decisions", value: "decisions" },
+                    { text: "Accepting myself and my emotions", value: "acceptance" }
+                ]
+            },
+            {
+                id: 2,
+                question: "When facing setbacks, what would help you most?",
+                type: "multiple",
+                options: [
+                    { text: "Clear strategies and discipline", value: "strategy" },
+                    { text: "Emotional support and understanding", value: "emotional" },
+                    { text: "Practical advice and solutions", value: "practical" },
+                    { text: "Spiritual perspective and inner peace", value: "spiritual" }
+                ]
+            },
+            {
+                id: 3,
+                question: "How do you prefer to learn and grow?",
+                type: "multiple",
+                options: [
+                    { text: "Through disciplined practice and repetition", value: "discipline" },
+                    { text: "Through reflection and emotional exploration", value: "reflection" },
+                    { text: "Through strategic thinking and planning", value: "planning" },
+                    { text: "Through storytelling and wisdom tales", value: "stories" }
+                ]
+            }
+        ];
+
+        // Components
+        const WelcomeScreen = ({ onStart }) => (
+            <div className="min-h-screen paper-texture flex items-center justify-center p-4">
+                <div className="text-center max-w-2xl">
+                    <div className="floating-animation mb-8">
+                        <h1 className="font-display text-6xl md:text-8xl font-bold text-sepia mb-4">
+                            Wisdom Seekers
+                        </h1>
+                        <div className="text-4xl mb-6">📜✨🧘‍♀️</div>
+                    </div>
+                    
+                    <p className="font-serif text-xl md:text-2xl text-sepia/80 mb-8 leading-relaxed">
+                        Journey with history's greatest minds to discover inner strength, 
+                        clarity, and wisdom for modern challenges.
+                    </p>
+                    
+                    <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 mb-8 border border-sepia/20">
+                        <h3 className="font-display text-lg font-semibold text-sepia mb-3">What Makes This Different?</h3>
+                        <div className="grid md:grid-cols-3 gap-4 text-sm text-sepia/70">
+                            <div>🎭 Historical Mentors</div>
+                            <div>🔒 Complete Privacy</div>
+                            <div>🌱 Growth-Focused</div>
+                        </div>
+                    </div>
+                    
+                    <button
+                        onClick={onStart}
+                        className="bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-gold text-white font-serif font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                        Begin Your Journey
+                    </button>
+                </div>
+            </div>
+        );
+
+        const Assessment = ({ onComplete }) => {
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [answers, setAnswers] = useState({});
+
+            const handleAnswer = (answer) => {
+                const newAnswers = { ...answers, [assessmentQuestions[currentQuestion].id]: answer };
+                setAnswers(newAnswers);
+
+                if (currentQuestion < assessmentQuestions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                    // Calculate mentor match based on answers
+                    const mentorMatch = calculateMentorMatch(newAnswers);
+                    onComplete(mentorMatch);
+                }
+            };
+
+            const calculateMentorMatch = (answers) => {
+                // Simple matching logic - in real app, this would be more sophisticated
+                const preferences = Object.values(answers);
+                
+                if (preferences.includes('strategy') || preferences.includes('discipline') || preferences.includes('focus')) {
+                    return mentors[0]; // Musashi
+                } else if (preferences.includes('emotional') || preferences.includes('acceptance') || preferences.includes('spiritual')) {
+                    return mentors[1]; // Rumi
+                } else {
+                    return mentors[2]; // Chanakya
+                }
+            };
+
+            const question = assessmentQuestions[currentQuestion];
+
+            return (
+                <div className="min-h-screen paper-texture flex items-center justify-center p-4">
+                    <div className="max-w-2xl w-full">
+                        <div className="text-center mb-8">
+                            <h2 className="font-display text-3xl font-semibold text-sepia mb-2">
+                                Finding Your Guide
+                            </h2>
+                            <p className="text-sepia/70">Question {currentQuestion + 1} of {assessmentQuestions.length}</p>
+                        </div>
+
+                        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-sepia/20">
+                            <h3 className="font-serif text-xl text-sepia mb-6 text-center">
+                                {question.question}
+                            </h3>
+
+                            <div className="space-y-3">
+                                {question.options.map((option, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handleAnswer(option.value)}
+                                        className="w-full text-left p-4 rounded-lg border border-sepia/20 hover:bg-gold/10 hover:border-gold/40 transition-all duration-200 font-serif"
+                                    >
+                                        {option.text}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-center mt-6">
+                            <div className="flex space-x-2">
+                                {assessmentQuestions.map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className={`w-3 h-3 rounded-full ${
+                                            index <= currentQuestion ? 'bg-gold' : 'bg-sepia/20'
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const MentorIntroduction = ({ mentor, onContinue }) => (
+            <div className="min-h-screen paper-texture flex items-center justify-center p-4">
+                <div className="max-w-2xl w-full text-center">
+                    <div className="floating-animation mb-8">
+                        <div className="text-6xl mb-4">{mentor.avatar}</div>
+                        <h2 className="font-display text-4xl font-bold text-sepia mb-2">
+                            {mentor.name}
+                        </h2>
+                        <p className="font-serif text-lg text-sepia/70">{mentor.title}</p>
+                    </div>
+
+                    <div className="bg-white/70 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-sepia/20 mb-8">
+                        <blockquote className="font-serif text-xl text-sepia italic mb-6">
+                            "{mentor.quote}"
+                        </blockquote>
+                        
+                        <p className="text-sepia/80 mb-6 leading-relaxed">
+                            {mentor.description}
+                        </p>
+
+                        <div className="flex flex-wrap justify-center gap-2 mb-6">
+                            {mentor.specialties.map((specialty, index) => (
+                                <span
+                                    key={index}
+                                    className="bg-gold/20 text-sepia px-3 py-1 rounded-full text-sm font-serif"
+                                >
+                                    {specialty}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={onContinue}
+                        className="bg-gradient-to-r from-sepia to-amber-700 hover:from-amber-700 hover:to-sepia text-white font-serif font-semibold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                        Begin Learning with {mentor.name}
+                    </button>
+                </div>
+            </div>
+        );
+
+        const ChatInterface = ({ mentor, onBack }) => {
+            const [messages, setMessages] = useState([
+                {
+                    type: 'mentor',
+                    content: `Greetings, seeker. I am ${mentor.name}. I sense you carry burdens that many before you have faced. Tell me, what weighs most heavily on your mind today?`,
+                    timestamp: new Date()
+                }
+            ]);
+            const [inputValue, setInputValue] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const messagesEndRef = useRef(null);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            useEffect(scrollToBottom, [messages]);
+
+            const handleSend = async () => {
+                if (!inputValue.trim()) return;
+
+                const userMessage = {
+                    type: 'user',
+                    content: inputValue,
+                    timestamp: new Date()
+                };
+
+                setMessages(prev => [...prev, userMessage]);
+                setInputValue('');
+                setIsTyping(true);
+
+                // Simulate AI response - in real app, this would call your backend
+                setTimeout(() => {
+                    const responses = {
+                        musashi: [
+                            "I see. The path of discipline is not about perfection, but about showing up each day despite the storm within. What small action can you take today to honor your commitment to growth?",
+                            "Anxiety is like an untrained warrior - chaotic and destructive. But observe it, do not become it. What patterns do you notice in your anxious thoughts?",
+                            "Strategy begins with knowing yourself. When you feel overwhelmed, you must first establish your ground. What gives you stability in uncertain times?"
+                        ],
+                        rumi: [
+                            "My dear friend, pain is not your enemy - it is the teacher you never asked for but desperately need. What is this pain trying to teach you about yourself?",
+                            "You speak of struggle, but I hear the voice of someone becoming. The butterfly never cursed the caterpillar. How might your struggles be preparing you for transformation?",
+                            "Love yourself first, not last. The heart that judges itself harshly cannot offer genuine compassion to others. What would you say to a dear friend facing your situation?"
+                        ],
+                        chanakya: [
+                            "Wisdom lies in understanding that every problem contains the seed of its solution. You must water that seed with action, not worry. What specific step will you take tomorrow?",
+                            "The mind that dwells on problems grows more problems. The mind that focuses on solutions finds a way. What resources and strengths do you already possess?",
+                            "A wise person adapts to circumstances while working to change them. You cannot control the storm, but you can adjust your sails. What is within your control right now?"
+                        ]
+                    };
+
+                    const mentorResponses = responses[mentor.id] || responses.musashi;
+                    const randomResponse = mentorResponses[Math.floor(Math.random() * mentorResponses.length)];
+
+                    const mentorMessage = {
+                        type: 'mentor',
+                        content: randomResponse,
+                        timestamp: new Date()
+                    };
+
+                    setMessages(prev => [...prev, mentorMessage]);
+                    setIsTyping(false);
+                }, 2000);
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                }
+            };
+
+            return (
+                <div className="min-h-screen paper-texture flex flex-col">
+                    {/* Header */}
+                    <div className="bg-white/80 backdrop-blur-sm border-b border-sepia/20 p-4">
+                        <div className="max-w-4xl mx-auto flex items-center justify-between">
+                            <button
+                                onClick={onBack}
+                                className="text-sepia hover:text-sepia/70 transition-colors"
+                            >
+                                ← Back
+                            </button>
+                            <div className="flex items-center space-x-3">
+                                <span className="text-2xl">{mentor.avatar}</span>
+                                <div className="text-center">
+                                    <h3 className="font-display font-semibold text-sepia">{mentor.name}</h3>
+                                    <p className="text-sm text-sepia/70">{mentor.philosophy}</p>
+                                </div>
+                            </div>
+                            <div className="w-16"></div>
+                        </div>
+                    </div>
+
+                    {/* Messages */}
+                    <div className="flex-1 overflow-y-auto scroll-area p-4">
+                        <div className="max-w-4xl mx-auto space-y-4">
+                            {messages.map((message, index) => (
+                                <div
+                                    key={index}
+                                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div className={`max-w-sm md:max-w-md lg:max-w-lg ${
+                                        message.type === 'user'
+                                            ? 'bg-gradient-to-br from-blue-100 to-blue-50 text-gray-800 rounded-l-lg rounded-tr-lg'
+                                            : 'chat-bubble rounded-r-lg rounded-tl-lg'
+                                    } p-4 shadow-sm`}>
+                                        {message.type === 'mentor' && (
+                                            <div className="flex items-center space-x-2 mb-2">
+                                                <span className="text-lg">{mentor.avatar}</span>
+                                                <span className="font-serif font-medium text-sepia text-sm">
+                                                    {mentor.name}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <p className="font-serif leading-relaxed text-sm md:text-base">
+                                            {message.content}
+                                        </p>
+                                        <div className="text-xs text-gray-500 mt-2 opacity-70">
+                                            {message.timestamp.toLocaleTimeString([], { 
+                                                hour: '2-digit', 
+                                                minute: '2-digit' 
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {isTyping && (
+                                <div className="flex justify-start">
+                                    <div className="chat-bubble rounded-r-lg rounded-tl-lg p-4 shadow-sm max-w-sm">
+                                        <div className="flex items-center space-x-2 mb-2">
+                                            <span className="text-lg">{mentor.avatar}</span>
+                                            <span className="font-serif font-medium text-sepia text-sm">
+                                                {mentor.name}
+                                            </span>
+                                        </div>
+                                        <div className="flex space-x-1">
+                                            <div className="w-2 h-2 bg-sepia/40 rounded-full animate-bounce"></div>
+                                            <div className="w-2 h-2 bg-sepia/40 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                                            <div className="w-2 h-2 bg-sepia/40 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+                    </div>
+
+                    {/* Input */}
+                    <div className="bg-white/80 backdrop-blur-sm border-t border-sepia/20 p-4">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex space-x-2">
+                                <textarea
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyPress={handleKeyPress}
+                                    placeholder="Share your thoughts with your mentor..."
+                                    className="flex-1 border border-sepia/20 rounded-lg p-3 font-serif resize-none focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold bg-white/70"
+                                    rows={2}
+                                    disabled={isTyping}
+                                />
+                                <button
+                                    onClick={handleSend}
+                                    disabled={!inputValue.trim() || isTyping}
+                                    className="bg-gradient-to-r from-gold to-yellow-500 hover:from-yellow-500 hover:to-gold disabled:from-gray-300 disabled:to-gray-300 text-white px-6 py-2 rounded-lg transition-all duration-300 font-serif font-semibold"
+                                >
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Main App Component
+        const MentalWellnessApp = () => {
+            const [currentScreen, setCurrentScreen] = useState('welcome');
+            const [selectedMentor, setSelectedMentor] = useState(null);
+
+            const screens = {
+                welcome: () => <WelcomeScreen onStart={() => setCurrentScreen('assessment')} />,
+                assessment: () => (
+                    <Assessment 
+                        onComplete={(mentor) => {
+                            setSelectedMentor(mentor);
+                            setCurrentScreen('mentorIntro');
+                        }} 
+                    />
+                ),
+                mentorIntro: () => (
+                    <MentorIntroduction 
+                        mentor={selectedMentor}
+                        onContinue={() => setCurrentScreen('chat')}
+                    />
+                ),
+                chat: () => (
+                    <ChatInterface 
+                        mentor={selectedMentor}
+                        onBack={() => setCurrentScreen('welcome')}
+                    />
+                )
+            };
+
+            return screens[currentScreen]();
+        };
+
+        // Render the app
+        ReactDOM.render(<MentalWellnessApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
