@@ -1,17 +1,14 @@
-Here’s a **GitHub README** draft for your *Wisdom Sanctuary* project, using only the implemented tech (React + Tailwind frontend, Flask + Python backend, Gemini API) and the functional features as described:
-
-***
-
 # Wisdom Sanctuary – AI Mental Wellness Platform
 
 **Link:** [Live Site](https://wisdom-sanctuary-app-frontend.vercel.app/)  
-**Frontend Repo:** [GitHub](https://github.com/Greyash-Dave/wisdom-sanctuary-app-frontend)
 
 ## Overview
 
 Wisdom Sanctuary is a prototype AI-powered platform designed to support youth mental wellness through interactive story-driven guidance. Users connect with AI mentors inspired by historical figures—such as Musashi, Rumi, and Chanakya—who offer support using culturally resonant philosophies and reflective learning.
 
 The experience is stigma-free, privacy-focused, and presented with a calming, sanctuary-themed UI to foster comfort.
+
+ <img src="https://raw.githubusercontent.com/Greyash-Dave/Greyash-Dave/main/images/wisdom-sanctuary/1.PNG">
 
 ## Core Features
 
