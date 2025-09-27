@@ -8,7 +8,9 @@ Wisdom Sanctuary is a prototype AI-powered platform designed to support youth me
 
 The experience is stigma-free, privacy-focused, and presented with a calming, sanctuary-themed UI to foster comfort.
 
- <img src="https://raw.githubusercontent.com/Greyash-Dave/Greyash-Dave/main/images/wisdom-sanctuary/1.PNG">
+<img src="https://raw.githubusercontent.com/Greyash-Dave/Greyash-Dave/main/images/wisdom-sanctuary/1.JPG">
+<img src="https://raw.githubusercontent.com/Greyash-Dave/Greyash-Dave/main/images/wisdom-sanctuary/2.JPG">
+<img src="https://raw.githubusercontent.com/Greyash-Dave/Greyash-Dave/main/images/wisdom-sanctuary/4.JPG">
 
 ## Core Features
 
