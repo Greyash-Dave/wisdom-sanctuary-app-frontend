@@ -22,7 +22,7 @@ The experience is stigma-free, privacy-focused, and presented with a calming, sa
 - **Multimodal Delivery:** Supports text, voice (text-to-speech), and visual prompts for engaging learning.
 - **Privacy & Security:** User conversations and information are handled with strict privacy; no personal data sharing.
 
-## Technology Used (Live MVP)
+## Technology Used
 
 - **Frontend:** React + Tailwind CSS
 - **Backend:** Python (Flask)
